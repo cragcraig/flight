@@ -26,5 +26,5 @@ func QueryStationRadius(station string, radius int, hoursBeforeNow float64, most
 	if len(metars) < 1 {
 		return []Metar{}, errors.New(fmt.Sprintf("no results for station %s within parameters", station))
 	}
-	return QueryRadius(metars[0].getCoord(), radius, hoursBeforeNow, mostRecentOnly)
+	return QueryRadius(metars[0].Coord(), radius, hoursBeforeNow, mostRecentOnly)
 }

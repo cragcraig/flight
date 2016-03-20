@@ -32,6 +32,6 @@ func (m Metar) String() string {
 	return m.RawText
 }
 
-func (m Metar) getCoord() geo.Coord {
+func (m Metar) Coord() geo.Coord {
 	return geo.NewCoord(m.Longitude, m.Latitude)
 }

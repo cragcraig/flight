@@ -2,14 +2,17 @@ package metar
 
 import (
 	"encoding/xml"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"strings"
 )
 
 type query struct {
-	Metar []Metar `xml:"data>METAR"`
+	Errors []string `xml:"errors>error"`
+	Metar  []Metar  `xml:"data>METAR"`
 }
 
 // Parses the result of a query to https://aviationweather.gov/adds/dataserver
@@ -19,6 +22,9 @@ func unmarshalXml(xmlBody []byte) ([]Metar, error) {
 	err := xml.Unmarshal(xmlBody, &q)
 	if err != nil {
 		return []Metar{}, err
+	}
+	if len(q.Errors) != 0 {
+		return q.Metar, errors.New("error(s) from METAR service: " + strings.Join(q.Errors, ", "))
 	}
 	return q.Metar, nil
 }
