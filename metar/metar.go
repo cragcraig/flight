@@ -9,6 +9,7 @@ type SkyCondition struct {
 	CloudBaseAgl string `xml:"cloud_base_ft_agl,attr"`
 }
 
+// XML fields documented at https://aviationweather.gov/adds/dataserver/metars/MetarFieldDescription.php
 type Metar struct {
 	RawText         string         `xml:"raw_text"`
 	StationId       string         `xml:"station_id"`
@@ -18,10 +19,11 @@ type Metar struct {
 	Temp            float64        `xml:"temp_c"`
 	Dewpoint        float64        `xml:"dewpoint_c"`
 	Wind_dir        int            `xml:"wind_dir_degrees"`
-	Wind_speed      int            `xml:"wind_speed_kt"`
+	WindSpeed       int            `xml:"wind_speed_kt"`
 	Visibility      float64        `xml:"visibility_statute_miles"`
 	Altim           float64        `xml:"altim_in_hg"`
 	SkyCondition    []SkyCondition `xml:"sky_condition"`
+	Weather         string         `xml:"wx_string"`
 	FlightCategory  string         `xml:"flight_category"`
 	Elevation       float64        `xml:"elevation_m"`
 }

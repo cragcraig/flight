@@ -9,10 +9,5 @@ func QueryStations(stations []string, hoursBeforeNow float64, mostRecentOnly boo
 	parameters := url.Values{}
 	parameters.Add("stationString", strings.Join(stations, ","))
 
-	queryUrl := buildQueryUrl(parameters, hoursBeforeNow, mostRecentOnly)
-	body, err := queryXml(queryUrl)
-	if err != nil {
-		return []Metar{}, err
-	}
-	return unmarshalXml(body)
+	return queryMetars(parameters, hoursBeforeNow, mostRecentOnly)
 }

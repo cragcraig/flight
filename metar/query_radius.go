@@ -14,22 +14,17 @@ func QueryRadius(coord geo.Coord, radius int, hoursBeforeNow float64, mostRecent
 	parameters := url.Values{}
 	parameters.Add("radialDistance", fmt.Sprintf("%d;%s", radius, coord))
 
-	queryUrl := buildQueryUrl(parameters, hoursBeforeNow, mostRecentOnly)
-	body, err := queryXml(queryUrl)
-	if err != nil {
-		return []Metar{}, err
-	}
-	return unmarshalXml(body)
+	return queryMetars(parameters, hoursBeforeNow, mostRecentOnly)
 }
 
 func QueryStationRadius(station string, radius int, hoursBeforeNow float64, mostRecentOnly bool) ([]Metar, error) {
-	// query most recent station metar first to get station coordinate
+	// query station metar to obtain the station coordinates
 	metars, err := QueryStations([]string{station}, hoursBeforeNow, true)
 	if err != nil {
 		return []Metar{}, err
 	}
 	if len(metars) < 1 {
-		return []Metar{}, errors.New("no results for station within parameters")
+		return []Metar{}, errors.New(fmt.Sprintf("no results for station %s within parameters", station))
 	}
 	return QueryRadius(metars[0].getCoord(), radius, hoursBeforeNow, mostRecentOnly)
 }

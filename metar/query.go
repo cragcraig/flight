@@ -23,7 +23,7 @@ func unmarshalXml(xmlBody []byte) ([]Metar, error) {
 	return q.Metar, nil
 }
 
-func queryXml(queryUrl string) ([]byte, error) {
+func fetchContents(queryUrl string) ([]byte, error) {
 	resp, err := http.Get(queryUrl)
 	if err != nil {
 		return []byte{}, err
@@ -36,6 +36,13 @@ func queryXml(queryUrl string) ([]byte, error) {
 	return body, nil
 }
 
+func boolToString(b bool) string {
+	if b {
+		return "true"
+	}
+	return "false"
+}
+
 func buildQueryUrl(parameters url.Values, hoursBeforeNow float64, mostRecentOnly bool) string {
 	u, err := url.Parse("https://aviationweather.gov/adds/dataserver_current/httpparam")
 	if err != nil {
@@ -45,11 +52,16 @@ func buildQueryUrl(parameters url.Values, hoursBeforeNow float64, mostRecentOnly
 	parameters.Add("requestType", "retrieve")
 	parameters.Add("format", "xml")
 	parameters.Add("hoursBeforeNow", fmt.Sprintf("%.2f", hoursBeforeNow))
-	mostRecent := "false"
-	if mostRecentOnly {
-		mostRecent = "true"
-	}
-	parameters.Add("mostRecentForEachStation", mostRecent)
+	parameters.Add("mostRecentForEachStation", boolToString(mostRecentOnly))
 	u.RawQuery = parameters.Encode()
 	return u.String()
+}
+
+func queryMetars(parameters url.Values, hoursBeforeNow float64, mostRecentOnly bool) ([]Metar, error) {
+	queryUrl := buildQueryUrl(parameters, hoursBeforeNow, mostRecentOnly)
+	body, err := fetchContents(queryUrl)
+	if err != nil {
+		return []Metar{}, err
+	}
+	return unmarshalXml(body)
 }
