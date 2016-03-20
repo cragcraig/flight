@@ -2,8 +2,10 @@ package metar
 
 import (
 	"encoding/xml"
+	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 )
 
 type query struct {
@@ -32,4 +34,17 @@ func queryXml(queryUrl string) ([]byte, error) {
 		return []byte{}, err
 	}
 	return body, nil
+}
+
+func buildQueryUrl(parameters url.Values, hoursBeforeNow float64) string {
+	u, err := url.Parse("https://aviationweather.gov/adds/dataserver_current/httpparam")
+	if err != nil {
+		panic("bad base url")
+	}
+	parameters.Add("dataSource", "metars")
+	parameters.Add("requestType", "retrieve")
+	parameters.Add("format", "xml")
+	parameters.Add("hoursBeforeNow", fmt.Sprintf("%.2f", hoursBeforeNow))
+	u.RawQuery = parameters.Encode()
+	return u.String()
 }

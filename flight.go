@@ -7,5 +7,5 @@ import (
 
 func main() {
 	fmt.Println("Flight Calculator")
-	fmt.Println(metar.QueryStations([]string{"KDEN"}, 3, true))
+	fmt.Println(metar.QueryStations([]string{"KDEN"}, true, 3))
 }
