@@ -36,7 +36,7 @@ func queryXml(queryUrl string) ([]byte, error) {
 	return body, nil
 }
 
-func buildQueryUrl(parameters url.Values, hoursBeforeNow float64) string {
+func buildQueryUrl(parameters url.Values, hoursBeforeNow float64, mostRecentOnly bool) string {
 	u, err := url.Parse("https://aviationweather.gov/adds/dataserver_current/httpparam")
 	if err != nil {
 		panic("bad base url")
@@ -45,6 +45,11 @@ func buildQueryUrl(parameters url.Values, hoursBeforeNow float64) string {
 	parameters.Add("requestType", "retrieve")
 	parameters.Add("format", "xml")
 	parameters.Add("hoursBeforeNow", fmt.Sprintf("%.2f", hoursBeforeNow))
+	mostRecent := "false"
+	if mostRecentOnly {
+		mostRecent = "true"
+	}
+	parameters.Add("mostRecentForEachStation", mostRecent)
 	u.RawQuery = parameters.Encode()
 	return u.String()
 }

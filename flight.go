@@ -7,5 +7,12 @@ import (
 
 func main() {
 	fmt.Println("Flight Calculator")
-	fmt.Println(metar.QueryStations([]string{"KDEN"}, true, 3))
+	metars, err := metar.QueryStationRadius("KBDU", 40, 3, true)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	for _, m := range metars {
+		fmt.Println(m)
+	}
 }
