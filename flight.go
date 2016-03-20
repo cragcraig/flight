@@ -54,9 +54,8 @@ func metarCmd(cmd string, argv []string) error {
 	if metars, err := metar.QueryStations(argv, TIME, true); err != nil {
 		return err
 	} else {
-		printMetars(metars)
+		return printMetars(metars)
 	}
-	return nil
 }
 
 func metarRadiusCmd(cmd string, argv []string) error {
@@ -72,7 +71,7 @@ func metarRadiusCmd(cmd string, argv []string) error {
 		if metars, err := metar.QueryStationRadius(argv[0], radius, TIME, true); err != nil {
 			return err
 		} else {
-			printMetars(metars)
+			return printMetars(metars)
 		}
 	} else {
 		// LON,LAT RADIUS
@@ -83,14 +82,17 @@ func metarRadiusCmd(cmd string, argv []string) error {
 		if metars, err := metar.QueryRadius(geo.NewCoord(lon, lat), radius, TIME, true); err != nil {
 			return err
 		} else {
-			printMetars(metars)
+			return printMetars(metars)
 		}
 	}
-	return nil
 }
 
-func printMetars(metars []metar.Metar) {
+func printMetars(metars []metar.Metar) error {
+	if len(metars) == 0 {
+		return errors.New("no results within parameters")
+	}
 	for _, m := range metars {
 		fmt.Println(m)
 	}
+	return nil
 }
