@@ -3,7 +3,7 @@ package metar
 import (
 	"errors"
 	"fmt"
-	"github.com/gnarlyskier/flight/geo"
+	"github.com/cragcraig/flight/geo"
 	"net/url"
 )
 

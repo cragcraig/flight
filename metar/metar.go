@@ -1,7 +1,7 @@
 package metar
 
 import (
-	"github.com/gnarlyskier/flight/geo"
+	"github.com/cragcraig/flight/geo"
 )
 
 type SkyCondition struct {
