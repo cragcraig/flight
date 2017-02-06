@@ -10,13 +10,39 @@ import (
 const TIME = 24
 const helpCmdName = "help"
 
-type Command func(string, []string) error
+type CommandFunc func(string, []string) error
 
-var commands = map[string]Command{
-	"version":      VersionCmd,
-	helpCmdName:    HelpCmd,
-	"metar":        MetarCmd,
-	"metar-radius": MetarRadiusCmd,
+type CommandEntry struct {
+	cmd   CommandFunc
+	desc  string
+	usage string
+	eg    []string
+}
+
+var commands = map[string]CommandEntry{
+	"version": CommandEntry{
+		cmd:   VersionCmd,
+		desc:  "Report the version",
+		usage: "",
+	},
+	helpCmdName: CommandEntry{
+		cmd:   nil,
+		desc:  "Provide help documentation",
+		usage: "[COMMAND]",
+		eg:    []string{"", "metar"},
+	},
+	"metar": CommandEntry{
+		cmd:   MetarCmd,
+		desc:  "Fetch METARs for station(s)",
+		usage: "STATION1 [STATION2...]",
+		eg:    []string{"KBDU KDEN"},
+	},
+	"metar-radius": CommandEntry{
+		cmd:   MetarCmd,
+		desc:  "Fetch current METARs within radius of a station or position",
+		usage: "STATION|LON,LAT RADIUS",
+		eg:    []string{"KBDU 50", "-105.23,40.03 50"},
+	},
 }
 
 func argsError(cmd, args string, exampleArgs ...string) error {
@@ -28,18 +54,14 @@ func argsError(cmd, args string, exampleArgs ...string) error {
 }
 
 func Exec(cmdName string, argv []string) error {
-	var cmd Command
-	if c, exists := commands[cmdName]; exists {
-		cmd = c
-	} else {
-		cmd = HelpCmd
-		cmdName = helpCmdName
-	}
-	if cmdName == helpCmdName {
-		argv = []string{}
-		for k := range commands {
-			argv = append(argv, k)
+	var cmd CommandFunc
+	if c, exists := commands[cmdName]; !exists || cmdName == helpCmdName {
+		cmd = func(_ string, argv []string) error {
+			return help(commands, argv)
 		}
+		cmdName = helpCmdName
+	} else {
+		cmd = c.cmd
 	}
 	return cmd(cmdName, argv)
 }
@@ -49,9 +71,20 @@ func VersionCmd(_ string, _ []string) error {
 	return nil
 }
 
-func HelpCmd(cmd string, argv []string) error {
+func help(commands map[string]CommandEntry, argv []string) error {
 	VersionCmd("", []string{})
 	fmt.Println("Usage:  flight COMMAND ARG1 ARG2...")
-	fmt.Println("Commands:  " + strings.Join(argv, ", "))
+	fmt.Println("Commands:")
+	// Get length of the longest command
+	max := 0
+	for k, _ := range commands {
+		if l := len(k); l > max {
+			max = l
+		}
+	}
+	// Print all commands with descriptions
+	for k, cmd := range commands {
+		fmt.Printf("  %-*s  %s\n", max, k, cmd.desc)
+	}
 	return nil
 }
