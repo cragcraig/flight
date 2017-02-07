@@ -19,9 +19,9 @@ func printMetars(metars []metar.Metar) error {
 	return nil
 }
 
-func MetarCmd(cmd string, argv []string) error {
+func MetarCmd(cmd CommandEntry, argv []string) error {
 	if len(argv) < 1 {
-		return argsError(cmd, "STATION1 STATION2", "KBDU KDEN")
+		return cmd.getUsageError()
 	}
 	if metars, err := metar.QueryStations(argv, TIME, true); err != nil {
 		return err
@@ -30,9 +30,9 @@ func MetarCmd(cmd string, argv []string) error {
 	}
 }
 
-func MetarRadiusCmd(cmd string, argv []string) error {
+func MetarRadiusCmd(cmd CommandEntry, argv []string) error {
 	if len(argv) != 2 {
-		return argsError(cmd, "STATION|LON,LAT RADIUS", "KBDU 50", "-105.23,40.03 50")
+		return cmd.getUsageError()
 	}
 	radius, err := strconv.Atoi(argv[1])
 	if err != nil {
