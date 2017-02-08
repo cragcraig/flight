@@ -32,7 +32,7 @@ var commands = map[string]CommandEntry{
 	},
 	helpCmdName: CommandEntry{
 		name:  helpCmdName,
-		cmd:   nil,
+		cmd:   nil, // special case
 		desc:  "Provide help documentation",
 		usage: "[COMMAND]",
 		eg:    []string{"", "metar"},
@@ -99,6 +99,6 @@ func help(commands map[string]CommandEntry, argv []string) error {
 			fmt.Println(cmd.getUsageError())
 			return nil
 		}
-		return errors.New(fmt.Sprintf("Unable: '%s' is not a supported command\n", cmdName))
+		return errors.New(fmt.Sprintf("Unable: '%s' is not a supported command", cmdName))
 	}
 }

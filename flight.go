@@ -17,5 +17,6 @@ func main() {
 	}
 	if err := cmds.Exec(strings.ToLower(cmdName), args); err != nil {
 		fmt.Println(err)
+		os.Exit(1)
 	}
 }
