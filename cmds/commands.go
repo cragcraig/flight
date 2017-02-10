@@ -46,7 +46,7 @@ var commands = map[string]CommandEntry{
 	},
 	"metar-radius": CommandEntry{
 		name:  "metar-radius",
-		cmd:   MetarCmd,
+		cmd:   MetarRadiusCmd,
 		desc:  "Fetch current METARs within radius of a station or position",
 		usage: "STATION|LON,LAT RADIUS",
 		eg:    []string{"KBDU 50", "-105.23,40.03 50"},
