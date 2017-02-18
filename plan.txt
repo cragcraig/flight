@@ -1,0 +1,30 @@
+$ metar kbdu
+$ flight taf kbjc
+$ flight metar-radius kbdu 50
+$ flight taf-radius kbdu 50
+$ flight pirep kbdu 150
+$ flight weight-balance C172
+...
+
+$ flight leg kbdu kcos > myflight.flgt
+1 KBDU (fpm, rpm) > 
+2 (alt, pos, fpm, rpm) > ...
+3 (alt, pos, fpm, rpm) > ...
+4 (alt, pos, fpm, rpm) >
+Arrive KCOS
+
+$ cat myflight.flgt | flight leg-wx > myflight.flgtwx
+1 KBDU > auto
+KBDU METAR: 15006KT 18/M03 A2984
+Mag Dev: -8
+2 9000ft, KBJC > auto
+9000ft winds aloft: 120 @ 23, -2 C
+3 alt, pos > auto
+9000ft winds aloft: 120 @ 23, -2 C
+4 KCOS > auto +0130
+KCOS TAF: 15006KT 18/M03 A2984
+Mag Dev: -8
+
+$ leg-calc C172 2500
+POS    ALT     TAS  HEADING  DIST  TIME  FUEL
+KBDU   6258ft  73   92       6     0h9m  1.2gal

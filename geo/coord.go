@@ -1,6 +1,7 @@
 package geo
 
 import (
+	"errors"
 	"fmt"
 )
 
@@ -22,4 +23,13 @@ func (c Coord) String() string {
 
 func NewCoord(lon, lat float64) Coord {
 	return Coord{lon, lat}
+}
+
+func ParseCoord(coord string) (Coord, error) {
+	var lon, lat float64
+	if _, err := fmt.Sscanf(coord, "%f,%f", &lon, &lat); err != nil {
+		return Coord{}, errors.New("invalid lon,lat coordinate: " + coord)
+	} else {
+		return NewCoord(lon, lat), nil
+	}
 }

@@ -4,6 +4,8 @@ import (
 	"github.com/cragcraig/flight/geo"
 )
 
+const feet_per_meter = 3.28084
+
 type SkyCondition struct {
 	SkyCover     string `xml:"sky_cover,attr"`
 	CloudBaseAgl string `xml:"cloud_base_ft_agl,attr"`
@@ -34,4 +36,8 @@ func (m Metar) String() string {
 
 func (m Metar) Coord() geo.Coord {
 	return geo.NewCoord(m.Longitude, m.Latitude)
+}
+
+func (m Metar) AltInFt() int {
+	return int(m.Elevation * feet_per_meter)
 }

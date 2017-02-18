@@ -51,6 +51,13 @@ var commands = map[string]CommandEntry{
 		usage: "STATION|LON,LAT RADIUS",
 		eg:    []string{"KBDU 50", "-105.23,40.03 50"},
 	},
+	"leg": CommandEntry{
+		name:  "leg",
+		cmd:   CreateLegCmd,
+		desc:  "Create a leg of a flight path",
+		usage: "ORIGIN DEST",
+		eg:    []string{"KBDU KCOS"},
+	},
 }
 
 func (cmd CommandEntry) getUsageError() error {
