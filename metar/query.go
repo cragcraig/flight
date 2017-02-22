@@ -21,10 +21,16 @@ func unmarshalXml(xmlBody []byte) ([]Metar, error) {
 	var q query
 	err := xml.Unmarshal(xmlBody, &q)
 	if err != nil {
-		return []Metar{}, err
+		return []Metar{}, fmt.Errorf("%s: got \n%s", err, xmlBody)
 	}
 	if len(q.Errors) != 0 {
 		return q.Metar, errors.New("error(s) from METAR service: " + strings.Join(q.Errors, ", "))
+	}
+	// Check for obvious bad data
+	for _, m := range q.Metar {
+		if m.Longitude == 0 || m.Latitude == 0 {
+			return []Metar{}, fmt.Errorf("Invalid location returned from aviationweather.gov for %s", m.StationId)
+		}
 	}
 	return q.Metar, nil
 }

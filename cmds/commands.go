@@ -51,6 +51,20 @@ var commands = map[string]CommandEntry{
 		usage: "STATION|LON,LAT RADIUS",
 		eg:    []string{"KBDU 50", "-105.23,40.03 50"},
 	},
+	"coord": CommandEntry{
+		name:  "coord",
+		cmd:   CoordCmd,
+		desc:  "(longitude, latitude) coordinate of a location",
+		usage: "STATION",
+		eg:    []string{"KBDU", "KBDU+8S+23E"},
+	},
+	"dist": CommandEntry{
+		name:  "dist",
+		cmd:   DistCmd,
+		desc:  "Distance between two locations",
+		usage: "STATION|LON,LAT STATION|LON,LAT",
+		eg:    []string{"KBDU KCOS", "-105.23,40.03 -117.65,41.51"},
+	},
 	"leg": CommandEntry{
 		name:  "leg",
 		cmd:   CreateLegCmd,
@@ -62,8 +76,10 @@ var commands = map[string]CommandEntry{
 
 func (cmd CommandEntry) getUsageError() error {
 	msg := []string{fmt.Sprintf("Usage:  flight %s %s", cmd.name, cmd.usage)}
+	prefix := " e.g.,"
 	for _, eg := range cmd.eg {
-		msg = append(msg, fmt.Sprintf(" e.g.,  flight %s %s", cmd.name, eg))
+		msg = append(msg, fmt.Sprintf("%s  flight %s %s", prefix, cmd.name, eg))
+		prefix = "      "
 	}
 	return errors.New(strings.Join(msg, "\n"))
 }
@@ -79,7 +95,7 @@ func Exec(cmdName string, argv []string) error {
 }
 
 func printVersion() {
-	fmt.Println("Flight Utilities, version 1.1.4")
+	fmt.Println("Flight Utilities, version 0.6")
 }
 
 func help(commands map[string]CommandEntry, argv []string) error {

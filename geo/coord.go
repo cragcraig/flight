@@ -18,7 +18,7 @@ func (c Coord) getLon() float64 {
 }
 
 func (c Coord) String() string {
-	return fmt.Sprintf("%f,%f", c.lon, c.lat)
+	return fmt.Sprintf("%.3f,%.3f", c.lon, c.lat)
 }
 
 func NewCoord(lon, lat float64) Coord {
