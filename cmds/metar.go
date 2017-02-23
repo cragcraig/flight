@@ -48,7 +48,7 @@ func MetarRadiusCmd(cmd CommandEntry, argv []string) error {
 	} else {
 		// LON,LAT RADIUS
 		var lon, lat float64
-		if _, err := geo.ParseCoord(argv[0]); err != nil {
+		if _, err := geo.ParseLonLat(argv[0]); err != nil {
 			return err
 		}
 		if metars, err := metar.QueryRadius(geo.NewCoord(lon, lat), radius, TIME, true); err != nil {
