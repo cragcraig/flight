@@ -31,7 +31,7 @@ func (n Natfix) Issued() string {
 
 func (n Natfix) LonLat(station string) (string, error) {
 	if v, exists := n.data[strings.ToUpper(station)]; !exists {
-		return "<missing>", errors.New("Not found in NATFIX: " + station)
+		return "<missing>", errors.New("Not found in NATFIX database: " + station)
 	} else {
 		return v.lon + "," + v.lat, nil
 	}
