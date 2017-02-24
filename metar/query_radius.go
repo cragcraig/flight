@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/cragcraig/flight/data"
 	"github.com/cragcraig/flight/geo"
+	"github.com/cragcraig/flight/parse"
 	"net/url"
 )
 
@@ -19,10 +20,9 @@ func QueryRadius(coord geo.Coord, radius int, hoursBeforeNow float64, mostRecent
 }
 
 func QueryStationRadius(natfix data.Natfix, station string, radius int, hoursBeforeNow float64, mostRecentOnly bool) ([]Metar, error) {
-	c, err := natfix.Coord(station)
+	c, err := parse.ParsePos(natfix, station)
 	if err != nil {
 		return []Metar{}, err
 	}
-	fmt.Println(c)
 	return QueryRadius(c, radius, hoursBeforeNow, mostRecentOnly)
 }
