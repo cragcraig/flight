@@ -6,6 +6,7 @@ import (
 
 const avg_earth_radius_nm = 3440.069
 
+// Spherical model using average Earth radius
 func GlobeDistNM(a, b Coord) float64 {
 	return avg_earth_radius_nm * math.Abs(arcLength(a, b))
 }
@@ -14,7 +15,7 @@ func deg2rad(deg float64) float64 {
 	return deg * math.Pi / 180
 }
 
-// Spherical model using average Earth radius (max 0.5% error)
+// Spherical model (max 0.5% error)
 func arcLength(a, b Coord) float64 {
 	// Radians
 	lon1, lat1 := deg2rad(a.lon), deg2rad(a.lat)
