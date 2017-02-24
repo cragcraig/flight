@@ -48,7 +48,7 @@ var commands = map[string]CommandEntry{
 		name:  "metar-radius",
 		cmd:   MetarRadiusCmd,
 		desc:  "Fetch current METARs within radius of a station or position",
-		usage: "STATION|LON,LAT RADIUS",
+		usage: "STATION|LAT,LON RADIUS",
 		eg:    []string{"KBDU 50", "-105.23,40.03 50"},
 	},
 	"coord": CommandEntry{
@@ -62,7 +62,7 @@ var commands = map[string]CommandEntry{
 		name:  "dist",
 		cmd:   DistCmd,
 		desc:  "Distance between two locations",
-		usage: "STATION|LON,LAT STATION|LON,LAT",
+		usage: "STATION|LAT,LON STATION|LAT,LON",
 		eg:    []string{"KBDU KCOS", "-105.23,40.03 -117.65,41.51"},
 	},
 	"leg": CommandEntry{

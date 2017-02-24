@@ -5,6 +5,7 @@ import (
 	"github.com/cragcraig/flight/data"
 	"github.com/cragcraig/flight/geo"
 	"github.com/cragcraig/flight/metar"
+	"github.com/cragcraig/flight/parse"
 )
 
 type WaypointAndEnergy struct {
@@ -33,16 +34,22 @@ func (w Waypoint) String() string {
 	return fmt.Sprintf("{%s %dft}", pos, w.alt)
 }
 
-func CreateAptWaypoint(metar metar.Metar) Waypoint {
-	return Waypoint{
-		pos:      metar.Coord(),
-		alt:      metar.AltInFt(),
-		opt_desc: &metar.StationId,
+func CreateAptWaypoint(natfix data.Natfix, apt string, alt int) (Waypoint, error) {
+	c, err := natfix.Coord(apt)
+	if err != nil {
+		return Waypoint{
+			pos: geo.ErrCoord(),
+		}, err
 	}
+	return Waypoint{
+		pos:      c,
+		alt:      alt,
+		opt_desc: &apt,
+	}, nil
 }
 
 func ParseWaypoint(natfix data.Natfix, posDesc string, alt int) (Waypoint, error) {
-	if pos, err := geo.ParsePos(natfix, posDesc); err != nil {
+	if pos, err := parse.ParsePos(natfix, posDesc); err != nil {
 		return Waypoint{}, err
 	} else {
 		return Waypoint{
@@ -66,8 +73,14 @@ func CreateLegCmd(cmd CommandEntry, argv []string) error {
 		// Unreachable
 		panic("metar query succeeded but doesn't have exactly 2 results")
 	} else {
-		origin := CreateAptWaypoint(metars[0])
-		dest := CreateAptWaypoint(metars[1])
+		origin, err := CreateAptWaypoint(natfix, argv[0], metars[0].AltInFt())
+		if err != nil {
+			return err
+		}
+		dest, err := CreateAptWaypoint(natfix, argv[1], metars[1].AltInFt())
+		if err != nil {
+			return err
+		}
 		leg := []WaypointAndEnergy{}
 		// origin
 		if v, err := promptAptEnergy(origin); err != nil {

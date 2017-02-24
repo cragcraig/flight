@@ -1,9 +1,5 @@
 package metar
 
-import (
-	"github.com/cragcraig/flight/geo"
-)
-
 const feet_per_meter = 3.28084
 
 type SkyCondition struct {
@@ -32,10 +28,6 @@ type Metar struct {
 
 func (m Metar) String() string {
 	return m.RawText
-}
-
-func (m Metar) Coord() geo.Coord {
-	return geo.NewCoord(m.Longitude, m.Latitude)
 }
 
 func (m Metar) AltInFt() int {

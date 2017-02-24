@@ -3,6 +3,7 @@ package cmds
 import (
 	"errors"
 	"fmt"
+	"github.com/cragcraig/flight/data"
 	"github.com/cragcraig/flight/geo"
 	"github.com/cragcraig/flight/metar"
 	"strconv"
@@ -40,18 +41,20 @@ func MetarRadiusCmd(cmd CommandEntry, argv []string) error {
 	}
 	if !strings.ContainsRune(argv[0], ',') {
 		// STATION RADIUS
-		if metars, err := metar.QueryStationRadius(argv[0], radius, TIME, true); err != nil {
+		if natfix, err := data.LoadNatfix(); err != nil {
+			return err
+		} else if metars, err := metar.QueryStationRadius(natfix, argv[0], radius, TIME, true); err != nil {
 			return err
 		} else {
 			return printMetars(metars)
 		}
 	} else {
 		// LON,LAT RADIUS
-		var lon, lat float64
-		if _, err := geo.ParseLonLat(argv[0]); err != nil {
+		var lat, lon float64
+		if _, err := geo.ParseLatLon(argv[0]); err != nil {
 			return err
 		}
-		if metars, err := metar.QueryRadius(geo.NewCoord(lon, lat), radius, TIME, true); err != nil {
+		if metars, err := metar.QueryRadius(geo.NewCoord(lat, lon), radius, TIME, true); err != nil {
 			return err
 		} else {
 			return printMetars(metars)

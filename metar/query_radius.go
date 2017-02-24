@@ -3,6 +3,7 @@ package metar
 import (
 	"errors"
 	"fmt"
+	"github.com/cragcraig/flight/data"
 	"github.com/cragcraig/flight/geo"
 	"net/url"
 )
@@ -12,19 +13,16 @@ func QueryRadius(coord geo.Coord, radius int, hoursBeforeNow float64, mostRecent
 		return []Metar{}, errors.New("radius must be between 0 and 500 miles")
 	}
 	parameters := url.Values{}
-	parameters.Add("radialDistance", fmt.Sprintf("%d;%s", radius, coord))
+	parameters.Add("radialDistance", fmt.Sprintf("%d;%f,%f", radius, coord.Lon(), coord.Lat()))
 
 	return queryMetars(parameters, hoursBeforeNow, mostRecentOnly)
 }
 
-func QueryStationRadius(station string, radius int, hoursBeforeNow float64, mostRecentOnly bool) ([]Metar, error) {
-	// query station metar to obtain the station coordinates
-	metars, err := QueryStations([]string{station}, hoursBeforeNow, true)
+func QueryStationRadius(natfix data.Natfix, station string, radius int, hoursBeforeNow float64, mostRecentOnly bool) ([]Metar, error) {
+	c, err := natfix.Coord(station)
 	if err != nil {
 		return []Metar{}, err
 	}
-	if len(metars) < 1 {
-		return []Metar{}, errors.New(fmt.Sprintf("no results for station %s within parameters", station))
-	}
-	return QueryRadius(metars[0].Coord(), radius, hoursBeforeNow, mostRecentOnly)
+	fmt.Println(c)
+	return QueryRadius(c, radius, hoursBeforeNow, mostRecentOnly)
 }
