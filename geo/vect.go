@@ -6,12 +6,20 @@ type Vect struct {
 	X, Y float64
 }
 
+func (v Vect) IsOrigin() bool {
+	return v.X == 0 && v.Y == 0
+}
+
 func (v Vect) Add(o Vect) Vect {
 	return Vect{v.X + o.X, v.Y + o.Y}
 }
 
 func (v Vect) Subtract(o Vect) Vect {
 	return Vect{v.X - o.X, v.Y - o.Y}
+}
+
+func (v Vect) Mult(n float64) Vect {
+	return Vect{v.X * n, v.Y * n}
 }
 
 func (v Vect) Normalized() Vect {

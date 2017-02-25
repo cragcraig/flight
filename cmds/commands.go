@@ -54,16 +54,16 @@ var commands = map[string]CommandEntry{
 	"coord": CommandEntry{
 		name:  "coord",
 		cmd:   CoordCmd,
-		desc:  "(longitude, latitude) coordinate of a location",
+		desc:  "Latitude, longitude coordinate of a location",
 		usage: "STATION",
-		eg:    []string{"KBDU", "KBDU+8S+23E"},
+		eg:    []string{"KBDU", "KBDU+8S+23E", "KBDU+7@320", "KBDU+23E+7@320"},
 	},
 	"dist": CommandEntry{
 		name:  "dist",
 		cmd:   DistCmd,
 		desc:  "Distance between two locations",
 		usage: "STATION|LAT,LON STATION|LAT,LON",
-		eg:    []string{"KBDU KCOS", "-105.23,40.03 -117.65,41.51"},
+		eg:    []string{"KBDU KCOS", "-105.23,40.03 -117.65,41.51", "-105.23,40.03 KBDU+50W"},
 	},
 	"leg": CommandEntry{
 		name:  "leg",
