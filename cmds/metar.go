@@ -31,13 +31,28 @@ func MetarCmd(cmd CommandEntry, argv []string) error {
 	}
 }
 
+func MetarHistoryCmd(cmd CommandEntry, argv []string) error {
+	if len(argv) < 2 {
+		return cmd.getUsageError()
+	}
+	hours, err := strconv.Atoi(argv[0])
+	if err != nil || hours <= 0 {
+		return errors.New("Invalid hours, must be a positive integer: " + argv[0])
+	}
+	if metars, err := metar.QueryStations(argv[1:len(argv)], float64(hours), false); err != nil {
+		return err
+	} else {
+		return printMetars(metars)
+	}
+}
+
 func MetarRadiusCmd(cmd CommandEntry, argv []string) error {
 	if len(argv) != 2 {
 		return cmd.getUsageError()
 	}
 	radius, err := strconv.Atoi(argv[1])
-	if err != nil {
-		return errors.New("invalid radius: " + argv[1])
+	if err != nil || radius <= 0 {
+		return errors.New("Invalid radius, must be a positive integer: " + argv[1])
 	}
 	if !strings.ContainsRune(argv[0], ',') {
 		// STATION RADIUS

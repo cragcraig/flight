@@ -32,7 +32,7 @@ var commands = map[string]CommandEntry{
 	},
 	helpCmdName: CommandEntry{
 		name:  helpCmdName,
-		cmd:   nil, // special case
+		cmd:   nil, // special case to avoid circular dep
 		desc:  "Provide help documentation",
 		usage: "[COMMAND]",
 		eg:    []string{"", "metar"},
@@ -43,6 +43,13 @@ var commands = map[string]CommandEntry{
 		desc:  "Fetch METARs for station(s)",
 		usage: "STATION1 [STATION2...]",
 		eg:    []string{"KBDU KDEN"},
+	},
+	"metar-history": CommandEntry{
+		name:  "metar-history",
+		cmd:   MetarHistoryCmd,
+		desc:  "Fetch historical METARs for station(s)",
+		usage: "HOURS STATION1 [STATION2...]",
+		eg:    []string{"7 KBDU", "3 KBDU KBJC"},
 	},
 	"metar-radius": CommandEntry{
 		name:  "metar-radius",
