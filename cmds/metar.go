@@ -42,8 +42,23 @@ func MetarHistoryCmd(cmd CommandEntry, argv []string) error {
 	if metars, err := metar.QueryStations(argv[1:len(argv)], float64(hours), false); err != nil {
 		return err
 	} else {
-		return printMetars(metars)
+		mm := make(map[string][]metar.Metar)
+		for _, m := range metars {
+			mm[m.StationId] = append(mm[m.StationId], m)
+		}
+		first := true
+		for k, v := range mm {
+			if first {
+				first = false
+			} else {
+				fmt.Println("")
+			}
+			if err := printMetars(v); err != nil {
+				fmt.Println(k + ": " + err.Error())
+			}
+		}
 	}
+	return nil
 }
 
 func MetarRadiusCmd(cmd CommandEntry, argv []string) error {
