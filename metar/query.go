@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"strconv"
 	"strings"
 )
 
@@ -48,13 +49,6 @@ func fetchContents(queryUrl string) ([]byte, error) {
 	return body, nil
 }
 
-func boolToString(b bool) string {
-	if b {
-		return "true"
-	}
-	return "false"
-}
-
 func buildQueryUrl(parameters url.Values, hoursBeforeNow float64, mostRecentOnly bool) string {
 	u, err := url.Parse("https://aviationweather.gov/adds/dataserver_current/httpparam")
 	if err != nil {
@@ -64,7 +58,7 @@ func buildQueryUrl(parameters url.Values, hoursBeforeNow float64, mostRecentOnly
 	parameters.Add("requestType", "retrieve")
 	parameters.Add("format", "xml")
 	parameters.Add("hoursBeforeNow", fmt.Sprintf("%.2f", hoursBeforeNow))
-	parameters.Add("mostRecentForEachStation", boolToString(mostRecentOnly))
+	parameters.Add("mostRecentForEachStation", strconv.FormatBool(mostRecentOnly))
 	u.RawQuery = parameters.Encode()
 	return u.String()
 }

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/cragcraig/flight/data"
 	"github.com/cragcraig/flight/geo"
+	"strconv"
 	"strings"
 	"unicode"
 )
@@ -81,7 +82,7 @@ func parseAndApplyModifiers(c geo.Coord, modifiers []string) (geo.Coord, error) 
 				c = c.AddToLon(v.X).AddToLat(v.Y)
 			}
 		} else {
-			return geo.ErrCoord(), errors.New("Invalid modifier vector: " + m)
+			return geo.ErrCoord(), errors.New("Invalid offset vector: " + m)
 		}
 	}
 	return c, nil
@@ -92,7 +93,7 @@ func parseDirOffset(s string) (geo.Vect, error) {
 	var v, dir float64
 	_, err := fmt.Sscanf(s, "%f@%f", &v, &dir)
 	if err != nil {
-		return geo.Vect{}, errors.New("Invalid vector: " + s)
+		return geo.Vect{}, errors.New("Invalid directional offset vector: " + s)
 	}
 	// Real angles are in radians, have north at 90 degrees, and go counter-clockwise
 	theta := geo.Deg2Rad(90 - dir)
@@ -101,13 +102,15 @@ func parseDirOffset(s string) (geo.Vect, error) {
 
 // e.g., 26@340
 func parsePosOffset(s string) (geo.Vect, error) {
-	var v float64
-	var dir rune
-	_, err := fmt.Sscanf(s, "%f%c", &v, &dir)
-	if err != nil {
-		return geo.Vect{}, errors.New("Invalid vector: " + s)
+	if len(s) < 2 {
+		// Unreachable
+		panic("vector too short: " + s)
 	}
-	dir = unicode.ToUpper(dir)
+	v, err := strconv.ParseFloat(s[:len(s)-1], 64)
+	if err != nil {
+		return geo.Vect{}, errors.New("Invalid cardinal offset vector: " + s)
+	}
+	dir := unicode.ToUpper(rune(s[len(s)-1]))
 	if dir == 'N' {
 		return geo.Vect{0, v}, nil
 	} else if dir == 'S' {
