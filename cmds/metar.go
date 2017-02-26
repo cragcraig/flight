@@ -10,6 +10,9 @@ import (
 	"strings"
 )
 
+// TODO: Support passing as a flag
+const recency_upper_bound = 24
+
 func printMetars(metars []metar.Metar) error {
 	if len(metars) == 0 {
 		return errors.New("no results within parameters")
@@ -24,7 +27,7 @@ func MetarCmd(cmd CommandEntry, argv []string) error {
 	if len(argv) < 1 {
 		return cmd.getUsageError()
 	}
-	if metars, err := metar.QueryStations(argv, TIME, true); err != nil {
+	if metars, err := metar.QueryStations(argv, recency_upper_bound, true); err != nil {
 		return err
 	} else {
 		return printMetars(metars)
@@ -73,7 +76,7 @@ func MetarRadiusCmd(cmd CommandEntry, argv []string) error {
 		// STATION RADIUS
 		if natfix, err := data.LoadNatfix(); err != nil {
 			return err
-		} else if metars, err := metar.QueryStationRadius(natfix, argv[0], radius, TIME, true); err != nil {
+		} else if metars, err := metar.QueryStationRadius(natfix, argv[0], radius, recency_upper_bound, true); err != nil {
 			return err
 		} else {
 			return printMetars(metars)
@@ -84,7 +87,7 @@ func MetarRadiusCmd(cmd CommandEntry, argv []string) error {
 		if _, err := geo.ParseLatLon(argv[0]); err != nil {
 			return err
 		}
-		if metars, err := metar.QueryRadius(geo.NewCoord(lat, lon), radius, TIME, true); err != nil {
+		if metars, err := metar.QueryRadius(geo.NewCoord(lat, lon), radius, recency_upper_bound, true); err != nil {
 			return err
 		} else {
 			return printMetars(metars)

@@ -5,7 +5,6 @@ import (
 )
 
 const avg_earth_radius_nm = 3440.069
-const avg_earth_lat_circ_nm = 21639
 
 // Spherical model using average Earth radius
 func GlobeDistNM(a, b Coord) float64 {

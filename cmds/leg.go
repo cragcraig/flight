@@ -67,7 +67,8 @@ func CreateLegCmd(cmd CommandEntry, argv []string) error {
 
 	if natfix, err := data.LoadNatfix(); err != nil {
 		return err
-	} else if metars, err := metar.QueryStations(argv, TIME, true); err != nil {
+	} else if metars, err := metar.QueryStations(argv, recency_upper_bound, true); err != nil {
+		// TODO: Use local database for altitude instead of querying metars
 		return err
 	} else if len(metars) != 2 {
 		// Unreachable

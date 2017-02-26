@@ -11,6 +11,8 @@ import (
 	"strings"
 )
 
+// 56 Day NASR Subscription NATFIX.txt
+// https://www.faa.gov/air_traffic/flight_info/aeronav/Aero_Data/
 type Natfix struct {
 	issued string
 	data   map[string]NatfixEntry
@@ -26,7 +28,7 @@ type NatfixEntry struct {
 func LoadNatfix() (Natfix, error) {
 	file, err := os.Open("NATFIX.txt")
 	if err != nil {
-		return Natfix{}, err
+		return Natfix{}, errors.New("Unable to load NATFIX database: " + err.Error())
 	}
 	defer file.Close()
 	return parseNatfix(file)
@@ -104,17 +106,18 @@ func parseNatfix(r io.Reader) (Natfix, error) {
 	if l := strings.TrimSpace(s.Text()); l != "NATFIX" {
 		return Natfix{}, errors.New("Error loading NATFIX: Unexpected header: " + l)
 	}
-	// First line should be "NATFIX"
+	// Second line is the issue date
 	s.Scan()
 	issued := s.Text()
 	natfix := Natfix{
 		issued: strings.TrimSpace(issued),
 		data:   make(map[string]NatfixEntry),
 	}
-	// Parse lines
+	// Parse station lines
 	for s.Scan() {
 		l := strings.TrimSpace(s.Text())
 		if l == "$" {
+			// End of stations
 			break
 		}
 		if e, err := parseNatfixEntry(l); err != nil {

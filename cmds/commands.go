@@ -6,8 +6,6 @@ import (
 	"strings"
 )
 
-// TODO: Support passing as a flag
-const TIME = 24
 const helpCmdName = "help"
 
 type CommandFunc func(CommandEntry, []string) error
