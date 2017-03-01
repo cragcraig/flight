@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/cragcraig/flight/data"
 	"github.com/cragcraig/flight/geo"
-	"github.com/cragcraig/flight/metar"
 	"github.com/cragcraig/flight/parse"
 )
 
@@ -34,17 +33,17 @@ func (w Waypoint) String() string {
 	return fmt.Sprintf("{%s %dft}", pos, w.alt)
 }
 
-func CreateAptWaypoint(natfix data.Natfix, apt string, alt int) (Waypoint, error) {
-	c, err := natfix.Coord(apt)
+func CreateAptWaypoint(apts data.Apts, airport string) (Waypoint, error) {
+	apt, err := apts.GetApt(airport)
 	if err != nil {
 		return Waypoint{
 			pos: geo.ErrCoord(),
 		}, err
 	}
 	return Waypoint{
-		pos:      c,
-		alt:      alt,
-		opt_desc: &apt,
+		pos:      apt.Coord,
+		alt:      apt.Alt,
+		opt_desc: &airport,
 	}, nil
 }
 
@@ -67,18 +66,14 @@ func CreateLegCmd(cmd CommandEntry, argv []string) error {
 
 	if natfix, err := data.LoadNatfix(); err != nil {
 		return err
-	} else if metars, err := metar.QueryStations(argv, recency_upper_bound, true); err != nil {
-		// TODO: Use local database for altitude instead of querying metars
+	} else if apts, err := data.LoadApts(); err != nil {
 		return err
-	} else if len(metars) != 2 {
-		// Unreachable
-		panic("metar query succeeded but doesn't have exactly 2 results")
 	} else {
-		origin, err := CreateAptWaypoint(natfix, argv[0], metars[0].AltInFt())
+		origin, err := CreateAptWaypoint(apts, argv[0])
 		if err != nil {
 			return err
 		}
-		dest, err := CreateAptWaypoint(natfix, argv[1], metars[1].AltInFt())
+		dest, err := CreateAptWaypoint(apts, argv[1])
 		if err != nil {
 			return err
 		}

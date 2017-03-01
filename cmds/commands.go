@@ -73,7 +73,7 @@ var commands = map[string]CommandEntry{
 	"apt": CommandEntry{
 		name:  "apt",
 		cmd:   AptCmd,
-		desc:  "Airport coordinate and altitude",
+		desc:  "Airport basic geographical data",
 		usage: "AIRPORT",
 		eg:    []string{"KBDU"},
 	},

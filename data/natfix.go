@@ -15,10 +15,10 @@ import (
 // https://www.faa.gov/air_traffic/flight_info/aeronav/Aero_Data/
 type Natfix struct {
 	issued string
-	data   map[string]NatfixEntry
+	data   map[string]natfixEntry
 }
 
-type NatfixEntry struct {
+type natfixEntry struct {
 	id           string
 	lon, lat     string
 	region       string
@@ -39,7 +39,7 @@ func (n Natfix) Issued() string {
 	return n.issued
 }
 
-func (n Natfix) Coord(station string) (geo.Coord, error) {
+func (n Natfix) GetFix(station string) (geo.Coord, error) {
 	if v, exists := n.data[strings.ToUpper(station)]; !exists {
 		return geo.ErrCoord(), errors.New("Not found in NATFIX database: " + station)
 	} else {
@@ -111,7 +111,7 @@ func parseNatfix(r io.Reader) (Natfix, error) {
 	issued := s.Text()
 	natfix := Natfix{
 		issued: strings.TrimSpace(issued),
-		data:   make(map[string]NatfixEntry),
+		data:   make(map[string]natfixEntry),
 	}
 	// Parse station lines
 	for s.Scan() {
@@ -132,12 +132,12 @@ func parseNatfix(r io.Reader) (Natfix, error) {
 	return natfix, nil
 }
 
-func parseNatfixEntry(entry string) (NatfixEntry, error) {
+func parseNatfixEntry(entry string) (natfixEntry, error) {
 	fields := strings.Fields(entry)
 	if len(fields) < 7 || fields[0] != "I" {
-		return NatfixEntry{}, errors.New("Invalid NATFIX entry: " + entry)
+		return natfixEntry{}, errors.New("Invalid NATFIX entry: " + entry)
 	}
-	return NatfixEntry{
+	return natfixEntry{
 		id:           getField(entry, 3, 5),
 		lat:          getField(entry, 9, 7),
 		lon:          getField(entry, 17, 8),

@@ -51,7 +51,7 @@ func parseStart(natfix data.Natfix, pos string) (geo.Coord, error) {
 		} else {
 			return c, nil
 		}
-	} else if c, err := natfix.Coord(pos); err != nil {
+	} else if c, err := natfix.GetFix(pos); err != nil {
 		return geo.ErrCoord(), err
 	} else {
 		// Station position

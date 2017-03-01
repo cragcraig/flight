@@ -44,12 +44,14 @@ func AptCmd(cmd CommandEntry, argv []string) error {
 		return cmd.getUsageError()
 	}
 
-	if apt, err := data.LoadApt(); err != nil {
+	if apts, err := data.LoadApts(); err != nil {
 		return err
-	} else if c, alt, err := apt.Coord(argv[0]); err != nil {
+	} else if apt, err := apts.GetApt(argv[0]); err != nil {
 		return err
 	} else {
-		fmt.Printf("%s  %dft\n", c, alt)
+		fmt.Printf("Lat, Lon:       %s\n", apt.Coord)
+		fmt.Printf("Altitude:       %d ft\n", apt.Alt)
+		fmt.Printf("Mag Variation:  %d\n", apt.Variation)
 		return nil
 	}
 }
