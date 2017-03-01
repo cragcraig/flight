@@ -70,6 +70,13 @@ var commands = map[string]CommandEntry{
 		usage: "STATION|LAT,LON STATION|LAT,LON",
 		eg:    []string{"KBDU KCOS", "-105.23,40.03 -117.65,41.51", "-105.23,40.03 KBDU+50W"},
 	},
+	"apt": CommandEntry{
+		name:  "apt",
+		cmd:   AptCmd,
+		desc:  "Airport coordinate and altitude",
+		usage: "AIRPORT",
+		eg:    []string{"KBDU"},
+	},
 	"leg": CommandEntry{
 		name:  "leg",
 		cmd:   CreateLegCmd,

@@ -21,7 +21,7 @@ type Natfix struct {
 type NatfixEntry struct {
 	id           string
 	lon, lat     string
-	state        string
+	region       string
 	station_type string
 }
 
@@ -115,8 +115,8 @@ func parseNatfix(r io.Reader) (Natfix, error) {
 	}
 	// Parse station lines
 	for s.Scan() {
-		l := strings.TrimSpace(s.Text())
-		if l == "$" {
+		l := s.Text()
+		if len(l) != 0 && l[0] == '$' {
 			// End of stations
 			break
 		}
@@ -138,10 +138,10 @@ func parseNatfixEntry(entry string) (NatfixEntry, error) {
 		return NatfixEntry{}, errors.New("Invalid NATFIX entry: " + entry)
 	}
 	return NatfixEntry{
-		id:           fields[1],
-		lat:          fields[2],
-		lon:          fields[3],
-		state:        fields[5],
-		station_type: fields[len(fields)-1],
+		id:           getField(entry, 3, 5),
+		lat:          getField(entry, 9, 7),
+		lon:          getField(entry, 17, 8),
+		region:       getField(entry, 35, 2),
+		station_type: getField(entry, 38, 7),
 	}, nil
 }

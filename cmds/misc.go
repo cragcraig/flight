@@ -38,3 +38,18 @@ func CoordCmd(cmd CommandEntry, argv []string) error {
 		return nil
 	}
 }
+
+func AptCmd(cmd CommandEntry, argv []string) error {
+	if len(argv) != 1 {
+		return cmd.getUsageError()
+	}
+
+	if apt, err := data.LoadApt(); err != nil {
+		return err
+	} else if c, alt, err := apt.Coord(argv[0]); err != nil {
+		return err
+	} else {
+		fmt.Printf("%s  %dft\n", c, alt)
+		return nil
+	}
+}
