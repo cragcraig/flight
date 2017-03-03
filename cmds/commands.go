@@ -97,16 +97,15 @@ func (cmd CommandEntry) getUsageError() error {
 }
 
 func Exec(cmdName string, argv []string) error {
-	if c, exists := commands[cmdName]; !exists || cmdName == helpCmdName {
-		// Help command
-		if cmdName == helpCmdName {
-			return help(commands, argv)
-		} else {
-			return fmt.Errorf("Unrecognized command \"%s\", try \"help\"", cmdName)
-		}
-	} else {
+	if cmdName == helpCmdName || cmdName == "" {
+		// Help
+		return help(commands, argv)
+	} else if c, exists := commands[cmdName]; exists {
 		// All other commands
 		return c.cmd(c, argv)
+	} else {
+		// Unrecognized
+		return fmt.Errorf("Unrecognized command \"%s\", try \"help\"", cmdName)
 	}
 }
 
