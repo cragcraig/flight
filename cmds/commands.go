@@ -54,7 +54,7 @@ var commands = map[string]CommandEntry{
 		cmd:   MetarRadiusCmd,
 		desc:  "Fetch current METARs within radius of a location",
 		usage: "STATION|LAT,LON RADIUS",
-		eg:    []string{"KBDU 50", "-105.23,40.03 50"},
+		eg:    []string{"KBDU 50", "-105.23,40.03 50", "KBDU+10E"},
 	},
 	"coord": CommandEntry{
 		name:  "coord",
@@ -97,23 +97,30 @@ func (cmd CommandEntry) getUsageError() error {
 }
 
 func Exec(cmdName string, argv []string) error {
-	if c, exists := commands[cmdName]; !exists || cmdName == helpCmdName {
-		// Help command
+	if cmdName == helpCmdName || cmdName == "" {
+		// Help
 		return help(commands, argv)
-	} else {
+	} else if c, exists := commands[cmdName]; exists {
 		// All other commands
 		return c.cmd(c, argv)
+	} else {
+		// Unrecognized
+		return fmt.Errorf("Unrecognized command \"%s\", try \"help\"", cmdName)
 	}
 }
 
 func printVersion() {
-	fmt.Println("Flight Utilities, version 0.6")
+	fmt.Println("Flight Utilities, version 0.7")
 }
 
 func help(commands map[string]CommandEntry, argv []string) error {
 	if len(argv) == 0 {
 		printVersion()
-		fmt.Println("Usage:  flight COMMAND ARG1 ARG2...")
+		fmt.Println("")
+		fmt.Println("Usage:  flight COMMAND ARG1 [ARG2...]")
+		fmt.Println(" e.g.,  flight help metar-radius")
+		fmt.Println("        flight dist kbdu+5W 40.0,-105.2")
+		fmt.Println("")
 		fmt.Println("Commands:")
 		// Get length of the longest command
 		max := 0
