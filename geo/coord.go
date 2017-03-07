@@ -44,7 +44,7 @@ func ErrCoord() Coord {
 	return Coord{math.NaN(), math.NaN()}
 }
 
-// LON,LAT in decimal notation
+// LAT,LON in decimal notation
 // TODO: Support HH MM SS and HHMMSS formats
 func ParseLatLon(coord string) (Coord, error) {
 	var lat, lon float64
