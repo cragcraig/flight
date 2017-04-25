@@ -59,7 +59,7 @@ var commands = map[string]CommandEntry{
 	"coord": CommandEntry{
 		name:  "coord",
 		cmd:   CoordCmd,
-		desc:  "Latitude, longitude coordinate of a location",
+		desc:  "Coordinate of a location as a latitude,longitude pair",
 		usage: "STATION",
 		eg:    []string{"KBDU", "KBDU+8S+23E", "KBDU+7@320", "KBDU+23E+7@320"},
 	},
