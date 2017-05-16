@@ -59,30 +59,30 @@ func parseStart(natfix data.Natfix, pos string) (geo.Coord, error) {
 	}
 }
 
+// e.g., 5N 3W 23@340
+func ParseGeoVect(v string) (geo.Vect, error) {
+	if strings.ContainsAny(v, "NSEWnsew") {
+		// Relative positional vector
+		// e.g., KBDU+50W
+		return parsePosOffset(v)
+	} else if strings.ContainsRune(v, '@') {
+		// Relative directional vector
+		// e.g., KBDU+4@340
+		// Makes flat-earth assumption, not valid over large distances
+		return parseDirOffset(v)
+	} else {
+		return geo.Vect{}, errors.New("Invalid vector: " + v)
+	}
+}
+
 // Apply position relative modifiers
 // e.g., +5N +3W +23@340
 func parseAndApplyModifiers(c geo.Coord, modifiers []string) (geo.Coord, error) {
 	for _, m := range modifiers {
-		if strings.ContainsAny(m, "NSEWnsew") {
-			// Relative positional vector
-			// e.g., KBDU+50W
-			if v, err := parsePosOffset(m); err != nil {
-				return geo.ErrCoord(), err
-			} else {
-				// Only one of v.X or v.Y will be non-zero so order doesn't matter
-				c = c.AddToLon(v.X).AddToLat(v.Y)
-			}
-		} else if strings.ContainsRune(m, '@') {
-			// Relative directional vector
-			// e.g., KBDU+4@340
-			// Makes flat-earth assumption, not valid over large distances
-			if v, err := parseDirOffset(m); err != nil {
-				return geo.ErrCoord(), err
-			} else {
-				c = c.AddToLon(v.X).AddToLat(v.Y)
-			}
+		if v, err := ParseGeoVect(m); err != nil {
+			return geo.ErrCoord(), err
 		} else {
-			return geo.ErrCoord(), errors.New("Invalid offset vector: " + m)
+			c = c.AddToLon(v.X).AddToLat(v.Y)
 		}
 	}
 	return c, nil
@@ -93,7 +93,7 @@ func parseDirOffset(s string) (geo.Vect, error) {
 	var v, dir float64
 	_, err := fmt.Sscanf(s, "%f@%f", &v, &dir)
 	if err != nil {
-		return geo.Vect{}, errors.New("Invalid directional offset vector: " + s)
+		return geo.Vect{}, errors.New("Invalid directional vector: " + s)
 	}
 	// Real angles are in radians, have north at 90 degrees, and go counter-clockwise
 	theta := geo.Deg2Rad(90 - dir)
@@ -108,7 +108,7 @@ func parsePosOffset(s string) (geo.Vect, error) {
 	}
 	v, err := strconv.ParseFloat(s[:len(s)-1], 64)
 	if err != nil {
-		return geo.Vect{}, errors.New("Invalid cardinal offset vector: " + s)
+		return geo.Vect{}, errors.New("Invalid cardinal vector: " + s)
 	}
 	dir := unicode.ToUpper(rune(s[len(s)-1]))
 	if dir == 'N' {

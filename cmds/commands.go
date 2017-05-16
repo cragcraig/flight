@@ -56,6 +56,13 @@ var commands = map[string]CommandEntry{
 		usage: "STATION|LAT,LON RADIUS",
 		eg:    []string{"KBDU 50", "-105.23,40.03 50", "KBDU+10E"},
 	},
+	"wc": CommandEntry{
+		name:  "wc",
+		cmd:   WindCorrectionCmd,
+		desc:  "Wind correction calculation",
+		usage: "TAS COURSE WIND_SPEED@WIND_DIRECTION",
+		eg:    []string{"118 310 12@270"},
+	},
 	"coord": CommandEntry{
 		name:  "coord",
 		cmd:   CoordCmd,
