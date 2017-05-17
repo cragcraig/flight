@@ -15,6 +15,10 @@ func Deg2Rad(deg float64) float64 {
 	return deg * math.Pi / 180
 }
 
+func Rad2Deg(rad float64) float64 {
+	return rad * 180 / math.Pi
+}
+
 // Spherical model (max 0.5% error)
 func arcLength(a, b Coord) float64 {
 	// Radians
