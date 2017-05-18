@@ -56,12 +56,12 @@ var commands = map[string]CommandEntry{
 		usage: "STATION|LAT,LON RADIUS",
 		eg:    []string{"KBDU 50", "-105.23,40.03 50", "KBDU+10E"},
 	},
-	"wc": CommandEntry{
-		name:  "wc",
+	"windc": CommandEntry{
+		name:  "windc",
 		cmd:   WindCorrectionCmd,
 		desc:  "Wind correction calculation",
-		usage: "TAS COURSE WIND_SPEED@WIND_DIRECTION",
-		eg:    []string{"118 310 12@270"},
+		usage: "TAS COURSE WIND_SPEED@WIND_DIRECTION [DISTANCE]",
+		eg:    []string{"118 310 12@270", "118 310 12@270 23"},
 	},
 	"coord": CommandEntry{
 		name:  "coord",
@@ -117,7 +117,7 @@ func Exec(cmdName string, argv []string) error {
 }
 
 func printVersion() {
-	fmt.Println("Flight Utilities, version 0.7")
+	fmt.Println("Flight Utilities, version 0.8")
 }
 
 func help(commands map[string]CommandEntry, argv []string) error {
