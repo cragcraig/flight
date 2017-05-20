@@ -2,6 +2,7 @@ package cmds
 
 import (
 	"fmt"
+	"github.com/cragcraig/flight/data"
 	"github.com/cragcraig/flight/geo"
 	"github.com/cragcraig/flight/parse"
 	"math"
@@ -18,6 +19,29 @@ func groundSpeed(course, heading, tas float64, wind geo.Vect) float64 {
 
 func round(v float64) int {
 	return int(v + 0.5)
+}
+
+func WindCorrectionRouteCmd(cmd CommandEntry, argv []string) error {
+	return nil
+}
+
+func WindCorrectionRouteCmd(cmd CommandEntry, argv []string) error {
+	// TAS WIND_SPEED@WIND_DIRECTION ORIGIN DEST
+	if len(argv) != 4 {
+		return cmd.GetUsageError()
+	}
+
+	if natfix, err := data.LoadNatfix(); err != nil {
+		return err
+	} else if c, err := parse.ParsePos(natfix, argv[0]); err != nil {
+		return err
+	} else if wv, err := parse.ParseGeoVect(argv[2]); err != nil {
+		return err
+	} else if tas, err := strconv.ParseFloat(argv[0], 64); err != nil {
+		return err
+	} else {
+		return nil
+	}
 }
 
 func WindCorrectionCmd(cmd CommandEntry, argv []string) error {
@@ -40,23 +64,26 @@ func WindCorrectionCmd(cmd CommandEntry, argv []string) error {
 	} else if course, err := strconv.ParseFloat(argv[1], 64); err != nil {
 		return err
 	} else {
-		c := geo.Deg2Rad(geo.CompassToAngle(course))
-		h := heading(c, tas, wv)
-		gs := groundSpeed(c, h, tas, wv)
-		fmt.Printf("   Course:  %s\n", argv[1])
-		fmt.Printf("      TAS:  %s kts\n", argv[0])
-		fmt.Printf("     Wind:  %d kts @ %d\n",
-			round(wv.Magnitude()),
-			round(geo.AngleToCompass(geo.Rad2Deg(wv.AsAngle()))))
-		if dist != nil {
-			fmt.Printf(" Distance:  %s NM\n", argv[3])
-		}
-		fmt.Printf("\n")
-		fmt.Printf("  Heading:  %d\n", round(geo.AngleToCompass(geo.Rad2Deg(h))))
-		fmt.Printf("Gnd speed:  %d kts\n", round(gs))
-		if dist != nil {
-			fmt.Printf("      ETE:  %d min\n", round(*dist/(gs/60)))
-		}
-		return nil
+		return windCorrectionInternal(geo.Compass2Rad(course), tas, wv, dist)
 	}
+}
+
+func windCorrectionInternal(course, tas float64, wind geo.Vect, dist *float64) error {
+	h := heading(course, tas, wind)
+	gs := groundSpeed(course, h, tas, wind)
+	fmt.Printf("   Course:  %d\n", round(geo.Rad2Compass(course)))
+	fmt.Printf("      TAS:  %d kts\n", round(tas))
+	fmt.Printf("     Wind:  %d kts @ %d\n",
+		round(wind.Magnitude()),
+		round(geo.Rad2Compass(wind.AsAngle())))
+	if dist != nil {
+		fmt.Printf(" Distance:  %d NM\n", round(*dist))
+	}
+	fmt.Printf("\n")
+	fmt.Printf("  Heading:  %d\n", round(geo.Rad2Compass(h)))
+	fmt.Printf("Gnd speed:  %d kts\n", round(gs))
+	if dist != nil {
+		fmt.Printf("      ETE:  %d min\n", round(*dist/(gs/60)))
+	}
+	return nil
 }

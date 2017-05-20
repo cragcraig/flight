@@ -36,6 +36,15 @@ func (c Coord) String() string {
 	return fmt.Sprintf("%.4f,%.4f", c.lat, c.lon)
 }
 
+func (c Coord) AsVect3() Vect3 {
+	theta := Deg2Rad(c.lat)
+	phi := Deg2Rad(c.lon)
+	return Vect3{
+		math.Cos(theta) * math.Sin(phi),
+		math.Sin(theta) * math.Sin(phi),
+		math.Cos(phi)}
+}
+
 func NewCoord(lat, lon float64) Coord {
 	return Coord{lat, lon}
 }

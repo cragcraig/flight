@@ -59,8 +59,15 @@ var commands = map[string]CommandEntry{
 	"windc": CommandEntry{
 		name:  "windc",
 		cmd:   WindCorrectionCmd,
-		desc:  "Wind correction calculation",
+		desc:  "Wind correction course calculation",
 		usage: "TAS COURSE WIND_SPEED@WIND_DIRECTION [DISTANCE]",
+		eg:    []string{"118 310 12@270", "118 310 12@270 23"},
+	},
+	"windr": CommandEntry{
+		name:  "windr",
+		cmd:   WindCorrectionRouteCmd,
+		desc:  "Wind correction calculation for a route between two locations",
+		usage: "TAS WIND_SPEED@WIND_DIRECTION ORIGIN DEST",
 		eg:    []string{"118 310 12@270", "118 310 12@270 23"},
 	},
 	"coord": CommandEntry{

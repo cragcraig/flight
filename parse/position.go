@@ -96,7 +96,7 @@ func parseDirOffset(s string) (geo.Vect, error) {
 		return geo.Vect{}, errors.New("Invalid directional vector: " + s)
 	}
 	// Real angles are in radians, have north at 90 degrees, and go counter-clockwise
-	theta := geo.Deg2Rad(geo.CompassToAngle(dir))
+	theta := geo.Compass2Rad(dir)
 	return geo.HeadingFromAngle(theta).Mult(v), nil
 }
 

@@ -23,3 +23,13 @@ func arcLength(a, b Coord) float64 {
 	den := math.Sin(lat1)*math.Sin(lat2) + math.Cos(lat1)*math.Cos(lat2)*math.Cos(deltaLon)
 	return math.Atan2(math.Sqrt(num1*num1+num2*num2), den)
 }
+
+func InitialHeading(orig, dest Coord) float64 {
+	// See https://math.stackexchange.com/questions/1715008/compute-angle-between-two-points-in-a-sphere
+	north := Coord{0, 0}
+	b := orig.AsVect3()
+	c := dest.AsVect3()
+	n1 := b.Cross(c)
+	n2 := a.Cross(b)
+	return n1.AngleBetween(n2)
+}
