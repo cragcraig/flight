@@ -22,25 +22,25 @@ func round(v float64) int {
 }
 
 func WindCorrectionRouteCmd(cmd CommandEntry, argv []string) error {
-	return nil
-}
-
-func WindCorrectionRouteCmd(cmd CommandEntry, argv []string) error {
-	// TAS WIND_SPEED@WIND_DIRECTION ORIGIN DEST
 	if len(argv) != 4 {
-		return cmd.GetUsageError()
+		return cmd.getUsageError()
 	}
 
 	if natfix, err := data.LoadNatfix(); err != nil {
 		return err
-	} else if c, err := parse.ParsePos(natfix, argv[0]); err != nil {
+	} else if origin, err := parse.ParsePos(natfix, argv[2]); err != nil {
 		return err
-	} else if wv, err := parse.ParseGeoVect(argv[2]); err != nil {
+	} else if dest, err := parse.ParsePos(natfix, argv[3]); err != nil {
+		return err
+	} else if wv, err := parse.ParseGeoVect(argv[1]); err != nil {
 		return err
 	} else if tas, err := strconv.ParseFloat(argv[0], 64); err != nil {
 		return err
+	} else if course, err := geo.InitialHeadingCompass(origin, dest); err != nil {
+		return err
 	} else {
-		return nil
+		dist := geo.GlobeDistNM(origin, dest)
+		return windCorrectionInternal(geo.Compass2Rad(course), tas, wv, &dist)
 	}
 }
 

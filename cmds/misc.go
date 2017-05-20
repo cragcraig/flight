@@ -49,9 +49,9 @@ func AptCmd(cmd CommandEntry, argv []string) error {
 	} else if apt, err := apts.GetApt(argv[0]); err != nil {
 		return err
 	} else {
-		fmt.Printf("Lat, Lon:       %s\n", apt.Coord)
-		fmt.Printf("Altitude:       %d ft\n", apt.Alt)
-		fmt.Printf("Mag Variation:  %d\n", apt.Variation)
+		fmt.Printf("Lat, Lon:  %s\n", apt.Coord)
+		fmt.Printf("Altitude:  %d ft\n", apt.Alt)
+		fmt.Printf(" Mag Var:  %d\n", apt.Variation)
 		return nil
 	}
 }

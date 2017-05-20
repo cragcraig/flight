@@ -56,19 +56,19 @@ var commands = map[string]CommandEntry{
 		usage: "STATION|LAT,LON RADIUS",
 		eg:    []string{"KBDU 50", "-105.23,40.03 50", "KBDU+10E"},
 	},
-	"windc": CommandEntry{
-		name:  "windc",
+	"wind-course": CommandEntry{
+		name:  "wind-course",
 		cmd:   WindCorrectionCmd,
 		desc:  "Wind correction course calculation",
 		usage: "TAS COURSE WIND_SPEED@WIND_DIRECTION [DISTANCE]",
 		eg:    []string{"118 310 12@270", "118 310 12@270 23"},
 	},
-	"windr": CommandEntry{
-		name:  "windr",
+	"wind-route": CommandEntry{
+		name:  "wind-route",
 		cmd:   WindCorrectionRouteCmd,
 		desc:  "Wind correction calculation for a route between two locations",
 		usage: "TAS WIND_SPEED@WIND_DIRECTION ORIGIN DEST",
-		eg:    []string{"118 310 12@270", "118 310 12@270 23"},
+		eg:    []string{"118 12@270 KBDU KCYS", "118 12@270 KBDU+5E -117.65,41.51"},
 	},
 	"coord": CommandEntry{
 		name:  "coord",
@@ -91,13 +91,13 @@ var commands = map[string]CommandEntry{
 		usage: "AIRPORT",
 		eg:    []string{"KBDU"},
 	},
-	"leg": CommandEntry{
+	/* "leg": CommandEntry{
 		name:  "leg",
 		cmd:   CreateLegCmd,
 		desc:  "Create a leg of a flight path",
 		usage: "ORIGIN DEST",
 		eg:    []string{"KBDU KCOS"},
-	},
+	},*/
 }
 
 func (cmd CommandEntry) getUsageError() error {

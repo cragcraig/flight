@@ -37,12 +37,12 @@ func (c Coord) String() string {
 }
 
 func (c Coord) AsVect3() Vect3 {
-	theta := Deg2Rad(c.lat)
-	phi := Deg2Rad(c.lon)
+	theta := Deg2Rad(c.lon)
+	phi := Deg2Rad(c.lat)
 	return Vect3{
-		math.Cos(theta) * math.Sin(phi),
-		math.Sin(theta) * math.Sin(phi),
-		math.Cos(phi)}
+		math.Cos(theta) * math.Cos(phi),
+		math.Sin(theta) * math.Cos(phi),
+		math.Sin(phi)}
 }
 
 func NewCoord(lat, lon float64) Coord {
