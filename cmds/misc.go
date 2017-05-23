@@ -18,8 +18,18 @@ func DistCmd(cmd CommandEntry, argv []string) error {
 		return err
 	} else if c2, err := parse.ParsePos(natfix, argv[1]); err != nil {
 		return err
+	} else if course1, err := geo.InitialHeadingCompass(c1, c2); err != nil {
+		return err
+	} else if course2, err := geo.InitialHeadingCompass(c2, c1); err != nil {
+		return err
 	} else {
-		fmt.Printf("%.2f NM\n", geo.GlobeDistNM(c1, c2))
+		fmt.Printf("       Distance: %.2f NM\n", geo.GlobeDistNM(c1, c2))
+		fmt.Printf("Initial Heading: %.1f\n", course1)
+		course2 -= 180
+		if course2 < 0 {
+			course2 += 360
+		}
+		fmt.Printf("  Final Heading: %.1f\n", course2)
 		return nil
 	}
 }
