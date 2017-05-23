@@ -1,6 +1,7 @@
 package cmds
 
 import (
+	"errors"
 	"fmt"
 	"github.com/cragcraig/flight/data"
 	"github.com/cragcraig/flight/geo"
@@ -57,6 +58,7 @@ func WindCorrectionCmd(cmd CommandEntry, argv []string) error {
 		return cmd.getUsageError()
 	}
 
+	// TODO: Consider swapping speed@dir to dir@speed
 	if wv, err := parse.ParseGeoVect(argv[2]); err != nil {
 		return err
 	} else if tas, err := strconv.ParseFloat(argv[0], 64); err != nil {
@@ -69,8 +71,7 @@ func WindCorrectionCmd(cmd CommandEntry, argv []string) error {
 }
 
 func windCorrectionInternal(course, tas float64, wind geo.Vect, dist *float64) error {
-	h := heading(course, tas, wind)
-	gs := groundSpeed(course, h, tas, wind)
+	// Situation
 	fmt.Printf("   Course:  %d\n", round(geo.Rad2Compass(course)))
 	fmt.Printf("      TAS:  %d kts\n", round(tas))
 	fmt.Printf("     Wind:  %d kts @ %d\n",
@@ -80,6 +81,12 @@ func windCorrectionInternal(course, tas float64, wind geo.Vect, dist *float64) e
 		fmt.Printf(" Distance:  %d NM\n", round(*dist))
 	}
 	fmt.Printf("\n")
+	// Results
+	h := heading(course, tas, wind)
+	gs := groundSpeed(course, h, tas, wind)
+	if math.IsNaN(h) || math.IsNaN(gs) {
+		return errors.New("Course is impossible to achieve under provided parameters")
+	}
 	fmt.Printf("  Heading:  %d\n", round(geo.Rad2Compass(h)))
 	fmt.Printf("Gnd speed:  %d kts\n", round(gs))
 	if dist != nil {
