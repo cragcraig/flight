@@ -25,11 +25,7 @@ func DistCmd(cmd CommandEntry, argv []string) error {
 	} else {
 		fmt.Printf("       Distance: %.2f NM\n", geo.GlobeDistNM(c1, c2))
 		fmt.Printf("Initial Heading: %.1f\n", course1)
-		course2 -= 180
-		if course2 < 0 {
-			course2 += 360
-		}
-		fmt.Printf("  Final Heading: %.1f\n", course2)
+		fmt.Printf("  Final Heading: %.1f\n", geo.Wrap360(course2-180))
 		return nil
 	}
 }

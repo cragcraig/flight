@@ -87,10 +87,11 @@ func windCorrectionInternal(course, tas float64, wind geo.Vect, dist *float64) e
 	if math.IsNaN(h) || math.IsNaN(gs) {
 		return errors.New("Course is impossible to achieve under provided parameters")
 	}
+	fmt.Printf("      WCA:  %d\n", round(geo.Rad2Deg(course-h)))
 	fmt.Printf("  Heading:  %d\n", round(geo.Rad2Compass(h)))
 	fmt.Printf("Gnd speed:  %d kts\n", round(gs))
 	if dist != nil {
-		fmt.Printf("      ETE:  %d min\n", round(*dist/(gs/60)))
+		fmt.Printf("      ETE:  %.1f min\n", *dist/(gs/60))
 	}
 	return nil
 }

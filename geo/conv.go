@@ -12,15 +12,18 @@ func Rad2Deg(rad float64) float64 {
 	return rad * 180 / math.Pi
 }
 
+func Wrap360(deg float64) float64 {
+	n := int(deg / 360)
+	deg = deg - float64(360*n)
+	if deg < 0 {
+		deg += 360
+	}
+	return deg
+}
+
 // Real angles start on the X-axis and proceed counter-clockwise
 func Rad2Compass(rad float64) float64 {
-	c := (90 - Rad2Deg(rad))
-	d := int(c / 360)
-	c = c - float64(360*d)
-	if c < 0 {
-		c += 360
-	}
-	return c
+	return Wrap360(90 - Rad2Deg(rad))
 }
 
 func Compass2Rad(compass float64) float64 {
